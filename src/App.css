@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;900&display=swap');
+
+body {
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  color: #0B60B0;
+}
+
+.menu {
+  margin-top: 10px;
+  margin-left: 10px;
+  font-size: 30px;
+}
+
+.logo {
+  margin-top: 15px;
+  width: 50px;
+}
+
+ul li a {
+  color: antiquewhite;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 5px;
+  border-radius: 0;
+}
+
+header svg {
+  font-size: 30px;
+  color: antiquewhite;
+}
+
+.horizontal-list {
+  list-style: none; /* 기본 목록 스타일 제거 */
+  padding: 0; /* 기본 패딩 제거 */
+  flex-direction: row;
+  position: relative;
+}
