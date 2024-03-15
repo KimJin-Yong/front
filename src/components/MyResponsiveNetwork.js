@@ -5,24 +5,26 @@ export function MyResponsiveNetwork(props) {
     <ResponsiveNetwork
       data={props.data}
       margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
-      linkDistance={function (e) {
-        return e.distance * 2;
+      onClick = {(e) => {
+        return window.open(`http://localhost:3000/chatbot?paperId=${e.id}`);
       }}
-      centeringStrength={0.3}
-      repulsivity={10}
+      linkDistance={function (e) {
+        return e.distance * 2 + 50;
+      }}
+      nodeTooltip={(e) => {
+        return <a>{e.node.data.title}</a>
+      }}
+      centeringStrength={0.7}
+      repulsivity={15}
       nodeSize={function (n) {
         return n.size * 2;
       }}
       activeNodeSize={function (n) {
         return 2.5 * n.size;
       }}
+      inactiveNodeSize={15}
       nodeColor={function (e) {
         return e.color;
-      }}
-      nodeBorderWidth={1}
-      nodeBorderColor={{
-        from: "color",
-        modifiers: [["darker", 0.8]]
       }}
       linkThickness={function (n) {
         return 2 + 2 * n.target.data.height;
