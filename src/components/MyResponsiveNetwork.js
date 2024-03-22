@@ -1,15 +1,18 @@
 import { ResponsiveNetwork } from "@nivo/network";
+import { useNavigate } from 'react-router-dom';
 
 export function MyResponsiveNetwork(props) {
+  const navigate = useNavigate();
   return (
     <ResponsiveNetwork
       data={props.data}
+      annotations={props.annotations}
       margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
       onClick = {(e) => {
-        return window.open(`http://localhost:3000/chatbot?paperId=${e.id}`);
+        return navigate(`/chatbot?paperId=${e.id}`);
       }}
       linkDistance={function (e) {
-        return e.distance * 2 + 50;
+        return e.distance * 2 + 100;
       }}
       nodeTooltip={(e) => {
         return <a>{e.node.data.title}</a>
@@ -22,7 +25,7 @@ export function MyResponsiveNetwork(props) {
       activeNodeSize={function (n) {
         return 2.5 * n.size;
       }}
-      inactiveNodeSize={15}
+      inactiveNodeSize={30}
       nodeColor={function (e) {
         return e.color;
       }}
