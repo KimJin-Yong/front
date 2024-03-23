@@ -60,6 +60,7 @@ const Login = () => {
     } catch (error) {
       // Handle login failure
       console.error('Error logging in:', error);
+      alert('Fail to login.');
     }
   };
 

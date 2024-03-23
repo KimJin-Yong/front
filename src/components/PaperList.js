@@ -16,7 +16,7 @@ function PaperList(props) {
         <tbody>
           {papers.map(paper => (
             <tr key={paper.id}>
-              <td onClick={() => {navigate(`/chatbot?paperId=${paper.id}`)}} style={{padding: "5px"}}>
+              <td onClick={() => {navigate(`/chatbot?paper_id=${paper.id}`)}} style={{padding: "5px"}}>
                   {paper.title}
               </td>
               <td style={{padding: "5px"}}>{paper.author1}</td>

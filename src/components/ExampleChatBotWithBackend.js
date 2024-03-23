@@ -14,28 +14,36 @@ class PreviousSessionLogs extends Component {
   }
 
   componentDidMount() {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = JSON.parse(localStorage.getItem('accessToken'));
     const params = new URLSearchParams(window.location.search);
-    const paperId = params.get('paperId');
+    const paperId = params.get('paper_id');
 
     const axiosInstance = axios.create({
       headers: {
-        'Authorization': `Bearer ${accessToken.access_token}`
+        Authorization: `Bearer ${accessToken.access_token}`
       }
     });
 
-    // 백엔드 API를 호출하여 이전 세션의 로그를 가져옴
-    axiosInstance.get(`http://223.130.141.170:8000/chat/${paperId}`)
+    axiosInstance.get(`http://223.130.141.170:8000/chat/?paper_id=${paperId}`)
       .then(response => {
+        console.log(response.data);
         if (response.data === false) {
-          axios.post(`http://223.130.141.170:8000/chat`,
+          axiosInstance.post(`http://223.130.141.170:8000/chat/`,
             {
-              paperId
+              "paper_id": paperId
             }
-          )
+          ).then(() => {
+            const logs = [{"content": "What do you want to know about this paper?"}];
+            this.setState({ logs, loading: false });
+          }).catch(error => {
+            console.error('Error posting initial message:', error);
+            this.setState({ loading: false });
+          });
         }
-        const logs = response.data;
-        this.setState({ logs, loading: false });
+        else {
+          const logs = response.data;
+          this.setState({ logs, loading: false });
+        }
       })
       .catch(error => {
         console.error('Error fetching previous logs:', error);
@@ -48,11 +56,10 @@ class PreviousSessionLogs extends Component {
 
     return (
       <div>
-        <h3>Previous Session Logs:</h3>
         {loading ? <p>Loading...</p> :
-          <ul>
+          <ul style={{ listStyleType: 'none' }}>
             {logs.map((log, index) => (
-              <li key={index}>{log}</li>
+              <li key={index}>{log.content}</li> // Render the content of each log
             ))}
           </ul>
         }
@@ -77,8 +84,8 @@ class ChatBotWithBackend extends Component {
   componentDidMount() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const paperId = urlParams.get('paperId');
-    const accessToken = localStorage.getItem('accessToken');
+    const paperId = urlParams.get('paper_id');
+    const accessToken = JSON.parse(localStorage.getItem('accessToken'));
 
     axios.get(`http://223.130.128.44:8000/api/data/chatbot/${paperId}/${this.props.previousStep.message}`)
       .then(response => {
@@ -87,20 +94,20 @@ class ChatBotWithBackend extends Component {
           this.setState({ loading: false, result: data });
 
           const userMessage = {
-            paperId: paperId,
-            content: this.props.previousStep.message,
-            isBot: false
+            "content": this.props.previousStep.message,
+            "paper_id": paperId,
+            "user_com": false
           };
 
           const botMessage = {
-            paperId: paperId,
-            content: data,
-            isBot: true
+            "content": JSON.stringify(data.answer),
+            "paper_id": paperId,
+            "user_com": true
           };
 
           axios.post(`http://223.130.141.170:8000/chat/message`, userMessage, {
             headers: {
-              'Authorization': `Bearer ${accessToken}`
+              Authorization: `Bearer ${accessToken.access_token}`
             }
           })
             .then(response => {
@@ -112,7 +119,7 @@ class ChatBotWithBackend extends Component {
 
           axios.post(`http://223.130.141.170:8000/chat/message`, botMessage, {
             headers: {
-              'Authorization': `Bearer ${accessToken}`
+              Authorization: `Bearer ${accessToken.access_token}`
             }
           })
             .then(response => {

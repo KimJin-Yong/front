@@ -21,6 +21,7 @@ const SignUp = () => {
     } catch (error) {
       // Handle signup failure
       console.error('Error signing up:', error);
+      alert('Fail to sign up');
     }
   };
 
