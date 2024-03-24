@@ -71,7 +71,7 @@ const UploadForm = () => {
   return (
     <div>
       <div className="inputField" style={{ padding: "5px", position: "absolute", left: "50%", transform: "translateX(-50%)", width: "600px", height: "30px", marginTop: "30px" }}>
-        <input id="text" value={user_question} onChange={handleTextChange} style={{ border: 0, right: "95%", width: "550px", height: "28px", float: "left", outline: "none", verticalAlign: "middle" }} />
+        <input id="text" placeholder='Search the paper by typing a word you are interested' value={user_question} onChange={handleTextChange} style={{ border: 0, right: "95%", width: "550px", height: "28px", float: "left", outline: "none", verticalAlign: "middle" }} />
         <button type="button" className='btn btn-primary' onClick={handleButtonClick} disabled={!user_question} style={{ float: "right", position: "absolute", bottom: "8px", right: "5px", borderRadius: "12px", height: "60%", outline: "none", verticalAlign: "middle" }}>Search</button>
       </div>
       <div className='response-container'>

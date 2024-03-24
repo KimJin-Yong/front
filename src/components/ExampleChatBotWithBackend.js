@@ -24,16 +24,24 @@ class PreviousSessionLogs extends Component {
       }
     });
 
+    const exapleQuestions = [
+      { 'content': 'Example Question 1:' },
+      { 'content': 'What is the title of the paper?' },
+      { 'content': 'Example Question 2:' },
+      { 'content': 'What is the topic of this paper?' },
+      { 'content': 'Example Question 3:' },
+      { 'content': 'Could you brief me on this paper?' },
+    ];
+
     axiosInstance.get(`http://223.130.141.170:8000/chat/?paper_id=${paperId}`)
       .then(response => {
-        console.log(response.data);
         if (response.data === false) {
           axiosInstance.post(`http://223.130.141.170:8000/chat/`,
             {
               "paper_id": paperId
             }
           ).then(() => {
-            const logs = [{"content": "What do you want to know about this paper?"}];
+            const logs = exapleQuestions;
             this.setState({ logs, loading: false });
           }).catch(error => {
             console.error('Error posting initial message:', error);
@@ -42,12 +50,18 @@ class PreviousSessionLogs extends Component {
         }
         else {
           const logs = response.data;
+          console.log(logs);
+          if (logs.length === 0) {
+            logs = exapleQuestions;
+          }
           this.setState({ logs, loading: false });
         }
       })
       .catch(error => {
+        alert("Error Fetching Data");
+        const logs = exapleQuestions;
         console.error('Error fetching previous logs:', error);
-        this.setState({ loading: false });
+        this.setState({ logs, loading: false });
       });
   }
 
@@ -58,8 +72,22 @@ class PreviousSessionLogs extends Component {
       <div>
         {loading ? <p>Loading...</p> :
           <ul style={{ listStyleType: 'none' }}>
-            {logs.map((log, index) => (
-              <li key={index}>{log.content}</li> // Render the content of each log
+            {logs.map((log) => (
+              <li key={log.message_id}>
+                <li>
+                  {log.user_com ? (
+                    // user_com이 true인 경우
+                    <div className='font-User'>User</div>
+                  ) : (
+                    // user_com이 false인 경우
+                    <div className='font-PRQAS'>PRQAS</div>
+                  )}
+                </li>
+                <br />
+                <li className=''>
+                  {log.content}
+                </li>
+              </li> // Render the content of each log
             ))}
           </ul>
         }
@@ -151,7 +179,7 @@ class ChatBotWithBackend extends Component {
 
     return (
       <div className="chatbot-with-backend">
-        {loading ? <Loading /> : JSON.stringify(result.answer)}
+        {loading ? <Loading /> : <pre>{removeQuotes(JSON.stringify(result.answer, null, 2))}</pre>}
       </div>
     );
   }
@@ -165,13 +193,24 @@ ChatBotWithBackend.defaultProps = {
   triggerNextStep: undefined,
 };
 
+function removeQuotes(str) {
+  if (str.charAt(0) === '"' && str.charAt(str.length - 1) === '"') {
+    return str.slice(1, -1);
+  }
+  return str;
+}
+
 const ExampleChatBotWithBackend = () => (
   <ChatBot
     headerTitle="Paper Explainer"
+    hideUserAvatar={true}
+    floatingStyle={{ width: "100%", background: "red" }}
+    bubbleStyle={{ marginLeft: "8px", maxWidth: "100%", width: "100%", borderRadius: "5px" }}
+    hidInput={false}
     hideHeader={true}
     width="100%"
     style={{ height: "89vh", boxShadow: "none" }}
-    contentStyle={{ height: "82vh" }}
+    contentStyle={{ height: "82vh", width: "100%" }}
     steps={[
       {
         id: '1',
