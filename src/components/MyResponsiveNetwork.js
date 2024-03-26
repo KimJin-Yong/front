@@ -9,16 +9,17 @@ export function MyResponsiveNetwork(props) {
       annotations={props.annotations}
       margin={{ top: 0, right: 0, bottom: 0, left: 0 }}
       onClick = {(e) => {
-        return navigate(`/chatbot?paperId=${e.id}`);
+        return navigate(`/chatbot?paper_id=${e.id}`);
       }}
       linkDistance={function (e) {
-        return e.distance * 2 + 100;
+        return e.distance + 100;
       }}
+      distanceMin={4}
       nodeTooltip={(e) => {
         return <a>{e.node.data.title}</a>
       }}
       centeringStrength={0.7}
-      repulsivity={15}
+      repulsivity={80}
       nodeSize={function (n) {
         return n.size * 2;
       }}
